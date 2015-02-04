@@ -153,7 +153,7 @@ KISSY.add("kg/overlay/0.0.1/close-xtpl", [], function(S, require, exports, modul
     return buffer
   }
 });
-KISSY.add("kg/overlay/0.0.1/overlay-xtpl", ["overlay/close-xtpl", "component/extension/content-xtpl"], function(S, require, exports, module) {
+KISSY.add("kg/overlay/0.0.1/overlay-xtpl", ["kg/overlay/0.0.1/close-xtpl", "component/extension/content-xtpl"], function(S, require, exports, module) {
   return function(scope, S, undefined) {
     var buffer = "", config = this.config, engine = this, moduleWrap, utils = config.utils;
     if(typeof module !== "undefined" && module.kissy) {
@@ -292,7 +292,7 @@ KISSY.add("kg/overlay/0.0.1/control", ["component/container", "component/extensi
     return self
   }}, {ATTRS:{contentEl:{}, closable:{value:false, view:1}, closeBtn:{view:1}, closeAction:{value:HIDE}, focusable:{value:false}, allowTextSelection:{value:true}, handleMouseEvents:{value:false}, visible:{value:false}, xrender:{value:OverlayRender}}, xclass:"overlay"})
 });
-KISSY.add("kg/overlay/0.0.1/dialog-xtpl", ["overlay/close-xtpl"], function(S, require, exports, module) {
+KISSY.add("kg/overlay/0.0.1/dialog-xtpl", ["kg/overlay/0.0.1/close-xtpl"], function(S, require, exports, module) {
   return function(scope, S, undefined) {
     var buffer = "", config = this.config, engine = this, moduleWrap, utils = config.utils;
     if(typeof module !== "undefined" && module.kissy) {
@@ -599,7 +599,7 @@ KISSY.add("kg/overlay/0.0.1/popup", ["./control"], function(S, require) {
     return S.all(v)
   }}, triggerType:{value:"click"}, currentTrigger:{}, mouseDelay:{value:0.1}, toggle:{value:false}}, xclass:"popup"})
 });
-KISSY.add("kg/overlay/0.0.1/index", ["kg/overlay/0.0.1/control", "overlay/dialog", "overlay/popup"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/index", ["kg/overlay/0.0.1/control", "kg/overlay/0.0.1/dialog", "kg/overlay/0.0.1/popup"], function(S, require) {
   var O = require("kg/overlay/0.0.1/control");
   var D = require("kg/overlay/0.0.1/dialog");
   var P = require("kg/overlay/0.0.1/popup");
