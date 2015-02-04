@@ -20,7 +20,7 @@ build time: May 22 12:29
  overlay
 */
 
-KISSY.add("kg/overlay/0.0.1/gextension/loading", ["node"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/extension/loading", ["node"], function(S, require) {
   var Node = require("node");
   function Loading() {
   }
@@ -38,7 +38,7 @@ KISSY.add("kg/overlay/0.0.1/gextension/loading", ["node"], function(S, require) 
   }};
   return Loading
 });
-KISSY.add("kg/overlay/0.0.1/gextension/mask", ["node"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/extension/mask", ["node"], function(S, require) {
   var UA = S.UA, Node = require("node"), ie6 = UA.ie === 6, $ = Node.all;
   function docWidth() {
     return ie6 ? "expression(KISSY.DOM.docWidth())" : "100%"
@@ -113,7 +113,7 @@ KISSY.add("kg/overlay/0.0.1/gextension/mask", ["node"], function(S, require) {
   }};
   return Mask
 });
-KISSY.add("kg/overlay/0.0.1/gclose-xtpl", [], function(S, require, exports, module) {
+KISSY.add("kg/overlay/0.0.1/close-xtpl", [], function(S, require, exports, module) {
   return function(scope, S, undefined) {
     var buffer = "", config = this.config, engine = this, moduleWrap, utils = config.utils;
     if(typeof module !== "undefined" && module.kissy) {
@@ -153,7 +153,7 @@ KISSY.add("kg/overlay/0.0.1/gclose-xtpl", [], function(S, require, exports, modu
     return buffer
   }
 });
-KISSY.add("kg/overlay/0.0.1/goverlay-xtpl", ["overlay/close-xtpl", "component/extension/content-xtpl"], function(S, require, exports, module) {
+KISSY.add("kg/overlay/0.0.1/overlay-xtpl", ["overlay/close-xtpl", "component/extension/content-xtpl"], function(S, require, exports, module) {
   return function(scope, S, undefined) {
     var buffer = "", config = this.config, engine = this, moduleWrap, utils = config.utils;
     if(typeof module !== "undefined" && module.kissy) {
@@ -163,10 +163,10 @@ KISSY.add("kg/overlay/0.0.1/goverlay-xtpl", ["overlay/close-xtpl", "component/ex
     buffer += "";
     var config1 = {};
     var params2 = [];
-    params2.push("kg/overlay/0.0.1/gclose-xtpl");
+    params2.push("kg/overlay/0.0.1/close-xtpl");
     config1.params = params2;
     if(moduleWrap) {
-      require("kg/overlay/0.0.1/gclose-xtpl");
+      require("kg/overlay/0.0.1/close-xtpl");
       config1.params[0] = moduleWrap.resolveByName(config1.params[0])
     }
     var id0 = runInlineCommandUtil(engine, scope, config1, "include", 1);
@@ -185,7 +185,7 @@ KISSY.add("kg/overlay/0.0.1/goverlay-xtpl", ["overlay/close-xtpl", "component/ex
     return buffer
   }
 });
-KISSY.add("kg/overlay/0.0.1/goverlay-render", ["component/container", "./overlay-xtpl", "component/extension/content-render"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/overlay-render", ["component/container", "./overlay-xtpl", "component/extension/content-render"], function(S, require) {
   var Container = require("component/container");
   var OverlayTpl = require("./overlay-xtpl");
   var ContentRenderExtension = require("component/extension/content-render");
@@ -195,7 +195,7 @@ KISSY.add("kg/overlay/0.0.1/goverlay-render", ["component/container", "./overlay
     return el.one("." + this.getBaseCssClass("close"))
   }}})
 });
-KISSY.add("kg/overlay/0.0.1/gextension/overlay-effect", [], function(S) {
+KISSY.add("kg/overlay/0.0.1/extension/overlay-effect", [], function(S) {
   var effects = {fade:["Out", "In"], slide:["Up", "Down"]};
   function getGhost(self) {
     var el = self.$el, ghost = el.clone(true);
@@ -269,7 +269,7 @@ KISSY.add("kg/overlay/0.0.1/gextension/overlay-effect", [], function(S) {
   }};
   return OverlayEffect
 });
-KISSY.add("kg/overlay/0.0.1/gcontrol", ["component/container", "component/extension/shim", "component/extension/align", "./extension/loading", "./extension/mask", "./overlay-render", "./extension/overlay-effect"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/control", ["component/container", "component/extension/shim", "component/extension/align", "./extension/loading", "./extension/mask", "./overlay-render", "./extension/overlay-effect"], function(S, require) {
   var Container = require("component/container");
   var Shim = require("component/extension/shim");
   var AlignExtension = require("component/extension/align");
@@ -292,7 +292,7 @@ KISSY.add("kg/overlay/0.0.1/gcontrol", ["component/container", "component/extens
     return self
   }}, {ATTRS:{contentEl:{}, closable:{value:false, view:1}, closeBtn:{view:1}, closeAction:{value:HIDE}, focusable:{value:false}, allowTextSelection:{value:true}, handleMouseEvents:{value:false}, visible:{value:false}, xrender:{value:OverlayRender}}, xclass:"overlay"})
 });
-KISSY.add("kg/overlay/0.0.1/gdialog-xtpl", ["overlay/close-xtpl"], function(S, require, exports, module) {
+KISSY.add("kg/overlay/0.0.1/dialog-xtpl", ["overlay/close-xtpl"], function(S, require, exports, module) {
   return function(scope, S, undefined) {
     var buffer = "", config = this.config, engine = this, moduleWrap, utils = config.utils;
     if(typeof module !== "undefined" && module.kissy) {
@@ -302,10 +302,10 @@ KISSY.add("kg/overlay/0.0.1/gdialog-xtpl", ["overlay/close-xtpl"], function(S, r
     buffer += "";
     var config1 = {};
     var params2 = [];
-    params2.push("kg/overlay/0.0.1/gclose-xtpl");
+    params2.push("kg/overlay/0.0.1/close-xtpl");
     config1.params = params2;
     if(moduleWrap) {
-      require("kg/overlay/0.0.1/gclose-xtpl");
+      require("kg/overlay/0.0.1/close-xtpl");
       config1.params[0] = moduleWrap.resolveByName(config1.params[0])
     }
     var id0 = runInlineCommandUtil(engine, scope, config1, "include", 1);
@@ -417,7 +417,7 @@ KISSY.add("kg/overlay/0.0.1/gdialog-xtpl", ["overlay/close-xtpl"], function(S, r
     return buffer
   }
 });
-KISSY.add("kg/overlay/0.0.1/gdialog-render", ["./overlay-render", "./dialog-xtpl"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/dialog-render", ["./overlay-render", "./dialog-xtpl"], function(S, require) {
   var OverlayRender = require("./overlay-render");
   var DialogTpl = require("./dialog-xtpl");
   function _setStdModRenderContent(self, part, v) {
@@ -457,7 +457,7 @@ KISSY.add("kg/overlay/0.0.1/gdialog-render", ["./overlay-render", "./dialog-xtpl
     return footer && footer.html()
   }}})
 });
-KISSY.add("kg/overlay/0.0.1/gdialog", ["./control", "./dialog-render", "node"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/dialog", ["./control", "./dialog-render", "node"], function(S, require) {
   var Overlay = require("./control");
   var DialogRender = require("./dialog-render");
   var Node = require("node");
@@ -517,7 +517,7 @@ KISSY.add("kg/overlay/0.0.1/gdialog", ["./control", "./dialog-render", "node"], 
   }
   return Dialog
 });
-KISSY.add("kg/overlay/0.0.1/gpopup", ["./control"], function(S, require) {
+KISSY.add("kg/overlay/0.0.1/popup", ["./control"], function(S, require) {
   var Overlay = require("./control");
   return Overlay.extend({initializer:function() {
     var self = this, trigger = self.get("trigger");
@@ -599,10 +599,10 @@ KISSY.add("kg/overlay/0.0.1/gpopup", ["./control"], function(S, require) {
     return S.all(v)
   }}, triggerType:{value:"click"}, currentTrigger:{}, mouseDelay:{value:0.1}, toggle:{value:false}}, xclass:"popup"})
 });
-KISSY.add("kg/overlay/0.0.1/index", ["kg/overlay/0.0.1/gcontrol", "overlay/dialog", "overlay/popup"], function(S, require) {
-  var O = require("kg/overlay/0.0.1/gcontrol");
-  var D = require("kg/overlay/0.0.1/gdialog");
-  var P = require("kg/overlay/0.0.1/gpopup");
+KISSY.add("kg/overlay/0.0.1/index", ["kg/overlay/0.0.1/control", "overlay/dialog", "overlay/popup"], function(S, require) {
+  var O = require("kg/overlay/0.0.1/control");
+  var D = require("kg/overlay/0.0.1/dialog");
+  var P = require("kg/overlay/0.0.1/popup");
   O.Dialog = D;
   S.Dialog = D;
   O.Popup = P;
