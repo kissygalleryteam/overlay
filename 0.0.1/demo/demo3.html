@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>从 Markup 中构建</title>
+<script src="//g.assets.daily.taobao.net/kissy/k/6.0.0/seed-min.js" data-config="{combine:true}"></script>
+<link href="//g.alicdn.com/kissy/k/1.4.7/css/dpl/base.css" rel="stylesheet"/>
+
+<style>
+/*
+ * Copyright 2009 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by an Apache 2.0 License.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Styling for custom buttons rendered by goog.ui.CustomButtonRenderer.
+ *
+ * @author attila@google.com (Attila Bodis)
+ */
+
+.ks-button {
+    display: inline-block;
+    *display: inline;
+    *zoom:1;
+    margin: 2px;
+    font-family: Arial, sans-serif;
+    color: #000;
+    /* Client apps may override the URL at which they serve the image. */
+    background: #ddd url(button-bg.png) repeat-x top left;
+    text-decoration: none;
+    list-style: none;
+    vertical-align: middle;
+    cursor: default;
+    outline: none;
+    border-radius: 2px;
+    border-style: solid;
+    border-color: #aaa;
+    border-width: 1px;
+    /* By default in FF2, block elements inside a moz-inline-box are stacked
+   * horizontally next to each other.  This stops that weird behavior. */
+    -moz-box-orient: vertical;
+    padding: 3px 4px;
+    white-space: nowrap; /* Prevents buttons from line breaking on android. */
+}
+
+/* State: disabled. */
+.ks-button-disabled {
+    background-image: none !important;
+    opacity: 0.3;
+    cursor: default !important;
+    -moz-opacity: 0.3;
+    filter: alpha(opacity = 30);
+    color: #333 !important;
+    border-color: #999 !important;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .ks-button-disabled {
+    margin: 2px 1px !important;
+    padding: 0 1px !important;
+}
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .ks-button-disabled {
+    margin: 2px 1px !important;
+    padding: 0 1px !important;
+}
+
+/* State: hover. */
+.ks-button-hover {
+    border-color: #9cf #69e #69e #7af !important; /* Hover border wins. */
+}
+
+/* State: active, checked. */
+.ks-button-active,
+.ks-button-checked {
+    background-color: #bbb;
+    background-position: bottom left;
+}
+
+/* State: focused. */
+.ks-button-focused {
+    border-color: orange;
+}
+
+.ks-button-collapse-left {
+    margin-left: 0 !important;
+    border-radius: 0 2px 2px 0;
+    border-left: none;
+}
+
+.ks-button-collapse-right {
+    border-right: none !important;
+    border-radius: 2px 0 0 2px;
+    margin-right: 0 !important;
+}
+    .ks-overlay {
+        position:absolute;
+        left:-9999px;
+        top:-9999px;
+        z-index: 100;
+    }
+    .ks-overlay-hidden {
+        visibility: hidden;
+    }
+
+    .ks-overlay-mask-hidden {
+        display: none;
+    }
+
+    .ks-overlay-shown {
+        visibility: visible;
+    }
+
+    .ks-overlay-mask-shown{
+        display: block;
+    }
+</style>
+<style>
+    body {
+        padding: 90px 0 0 15px;
+    }
+    .popup {
+        position: absolute;
+        z-index: 50;
+        border-collapse: collapse;
+        left:-9999px;
+        top:-9999px;
+    }
+    .popup td.corner {
+        height: 13px;
+        width: 17px;
+    }
+    .popup td#topleft {
+        background-image: url(assets/bubble-1.png);
+    }
+    .popup td.top {
+        background-image: url(assets/bubble-2.png);
+    }
+    .popup td#topright {
+        background-image: url(assets/bubble-3.png);
+    }
+    .popup td.left {
+        background-image: url(assets/bubble-4.png);
+    }
+    .popup td.right {
+        background-image: url(assets/bubble-5.png);
+    }
+    .popup td#bottomleft {
+        background-image: url(assets/bubble-6.png);
+    }
+    .popup td.bottom {
+        background-image: url(assets/bubble-7.png);
+        text-align: center;
+    }
+    .popup td.bottom img {
+        display: block;
+        margin: 0 auto;
+    }
+    .popup td#bottomright {
+        background-image: url(assets/bubble-8.png);
+    }
+    .popup table.popup-contents {
+        font-size: 12px;
+        line-height: 1.2em;
+        background-color: #fff;
+        color: #666;
+        font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+    }
+    table.popup-contents th {
+        text-align: right;
+        text-transform: lowercase;
+    }
+    table.popup-contents td {
+        text-align: left;
+    }
+    tr#release-notes th {
+        text-align: left;
+        text-indent: -9999px;
+        background: url(assets/starburst.gif) no-repeat top right;
+        height: 17px;
+    }
+    tr#release-notes td a {
+        color: #333;
+    }
+
+</style>
+</head>
+<body>
+<a style="cursor:pointer"><img id="img-download" src="assets/nav-download.png"/></a>
+<div class="popup" id="dpop">
+    <div class="ks-popup-content">
+    <table>
+        <tr>
+            <td class="corner" id="topleft"></td>
+            <td class="top"></td>
+            <td class="corner" id="topright"></td>
+        </tr>
+        <tr>
+            <td class="left"></td>
+            <td>
+                <table class="popup-contents">
+                    <tr>
+                        <th>File:</th>
+                        <td>coda 1.7.zip</td>
+                    </tr>
+                    <tr>
+                        <th>Date:</th>
+                        <td>11/5/10</td>
+                    </tr>
+                    <tr>
+                        <th>Size:</th>
+                        <td>20 MB</td>
+                    </tr>
+                    <tr>
+                        <th>Req:</th>
+                        <td>Mac OS X 10.4+</td>
+                    </tr>
+                    <tr id="release-notes">
+                        <th>Read the release notes:</th>
+                        <td><a href="#" title="Read the release notes">release notes</a></td>
+                    </tr>
+                </table>
+            </td>
+            <td class="right"></td>
+        </tr>
+        <tr>
+            <td id="bottomleft" class="corner"></td>
+            <td class="bottom"><img src="assets/bubble-tail2.png" width="30" height="27" alt="popup tail"/></td>
+            <td class="corner" id="bottomright"></td>
+        </tr>
+    </table>
+    </div>
+</div>
+<div id="button-wrap"></div>
+<script>
+KISSY.use('node, overlay, button', function(S, Node, O, Button) {
+    //通过dom元素新建立popup
+    window.popup = new O.Popup({
+        srcNode:'#dpop',
+        trigger : '#img-download',//配置Popup的触发器
+        triggerType : 'mouse',    //触发类型
+        align : {
+            node : '#img-download',
+            points : ['tc', 'bc'],
+            offset : [0, 50]
+        }
+    });
+
+    var b = new Button({
+        content: "销毁",
+
+        render: "#button-wrap"
+    });
+    b.render();
+    b.on("click", function() {
+        //调用外部接口销毁popup
+        window.popup.destroy();
+    });
+});
+</script>
+</body>
+</html>
+

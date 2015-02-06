@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>新建 Markup</title>
+<script src="//g.assets.daily.taobao.net/kissy/k/6.0.0/seed-min.js" data-config="{combine:true}"></script>
+<style>
+    .ks-overlay {
+        position:absolute;
+        left:-9999px;
+        top:-9999px;
+        z-index: 100;
+    }
+    .ks-overlay-hidden {
+        visibility: hidden;
+    }
+
+    .ks-overlay-mask-hidden {
+        display: none;
+    }
+
+    .ks-overlay-shown {
+        visibility: visible;
+    }
+
+    .ks-overlay-mask-shown{
+        display: block;
+    }
+</style>
+<style>
+#link2, #link2 img {
+	display: inline-block;
+	line-height: 0;
+}
+.popup2 {
+	background: #444;
+	opacity: 0.7;
+	filter: alpha(opacity = 70);
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<a id="link2" href="#"><img src="http://img02.taobaocdn.com/bao/uploaded/i2/T1HTSaXiFsXXaMnuYb_093636.jpg_160x160.jpg"/></a>
+<script>
+KISSY.use('node,kg/overlay/0.0.1/', function(S, Node, O) {
+    var popup = new O.Popup({
+        trigger : '#link2', //触发元素
+        triggerType : 'mouse', //触发类型
+        elCls : 'popup2',
+        align : {
+            node : '#link2',
+            points : ['tl', 'tl']
+        },
+        width : Node.one('#link2').width(),
+        height : Node.one('#link2').height()
+    });
+});
+</script>
+</body>
+</html>
