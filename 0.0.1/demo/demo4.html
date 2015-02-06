@@ -1,0 +1,345 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Popup - 异步加载</title>
+<script src="//g.assets.daily.taobao.net/kissy/k/6.0.0/seed-min.js" data-config="{combine:true}"></script>
+<link href="//g.alicdn.com/kissy/k/1.4.7/css/dpl/base.css" rel="stylesheet"/>
+
+<style>
+.ks-dialog, .ks-overlay {
+    position: absolute; /*防止移位带来的闪烁*/
+    left: -9999px;
+    top: -9999px;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.ks-overlay-hidden {
+    visibility: hidden;
+}
+
+.ks-overlay-mask-hidden {
+    display: none;
+}
+
+.ks-dialog, .ks-popup {
+    background-color: #FBFBFB;
+    border: 1px solid #ACB4BE;
+}
+
+.ks-dialog .ks-dialog-header {
+    background: repeat-x scroll 0 0 #D6DBE2;
+    background-image: url("dialog-hd.png");
+    border-bottom: 1px solid #ACB4BE;
+    font-size: 14px;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 0 0 18px;
+}
+
+.ks-overlay-close {
+    height: 18px;
+    width: 18px;
+    border: 1px solid transparent;
+    right: 6px;
+    top: 6px;
+    z-index: 99;
+    vertical-align: middle;
+    position: absolute;
+    text-decoration: none;
+    outline: none;
+    _border-color: tomato;
+    _filter: chroma(color = tomato);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.ks-overlay-close .ks-overlay-close-x {
+    display: block;
+    background: no-repeat;
+    background-image: url("close.png");
+    height: 13px;
+    text-indent: -9999px;
+    width: 13px;
+    margin: 2.5px;
+}
+
+.ks-overlay-close:hover {
+    border: 1px solid #CED5E0;
+    background: white;
+}
+
+.ks-overlay-mask {
+    background-color: #000;
+    opacity: 0.3;
+    filter: alpha(opacity = 15);
+}
+
+.ks-ext-loading {
+    opacity: 0.3;
+    filter: alpha(opacity = 15);
+    background: #000 center center no-repeat scroll;
+    background-image: url("loading.gif");
+}
+
+.ke-global-loading .ks-ext-loading {
+    background-attachment: fixed;
+}
+
+.ks-overlay .ks-resizable-handler {
+    overflow: hidden;
+    font-size: 0;
+    line-height: 0;
+    position: absolute;
+}
+
+.ks-overlay .ks-resizable-handler-b {
+    height: 6px;
+    width: 100%; /*background-color: yellow;*/
+    /*-6px ie6 cross iframe shim*/
+    bottom: 0;
+    left: 0;
+    cursor: n-resize;
+}
+
+.ks-overlay .ks-resizable-handler-t {
+    height: 6px;
+    width: 100%; /*background-color: yellow;*/
+    top: 0;
+    left: 0;
+    cursor: n-resize;
+}
+
+.ks-overlay .ks-resizable-handler-l {
+    height: 100%;
+    -height: expression(this.parentNode.offsetHeight);
+    width: 6px; /*background-color: yellow;*/
+    top: 0;
+    left: 0;
+    cursor: e-resize;
+}
+
+.ks-overlay .ks-resizable-handler-r {
+    height: 100%;
+    -height: expression(this.parentNode.offsetHeight); /*background-color: yellow;*/
+    width: 6px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: e-resize;
+}
+
+.ks-overlay .ks-resizable-handler-bl {
+    height: 6px;
+    width: 6px; /*background-color: green;*/
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    cursor: sw-resize;
+}
+
+.ks-overlay .ks-resizable-handler-br {
+    height: 6px;
+    width: 6px;
+    z-index: 1; /*background-color: green;*/
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+}
+
+.ks-overlay .ks-resizable-handler-tl {
+    height: 6px;
+    width: 6px;
+    z-index: 1; /*background-color: green;*/
+    top: 0;
+    left: 0;
+    cursor: nw-resize;
+}
+
+.ks-overlay .ks-resizable-handler-tr {
+    height: 6px;
+    width: 6px;
+    z-index: 1; /*background-color: green;*/
+    top: 0;
+    right: 0;
+    cursor: ne-resize;
+}
+
+/**
+ * Loading
+ * @creator fool2fish<fool2fish@gmail.com>
+ */
+
+.loading{position:absolute;z-index:10000;}
+.loading .mask{left:0;top:0;width:100%;height:100%;background:url(bg-transparent.png);_background:#000;_filter:alpha(opacity=20);}
+.loading .text{position:absolute;height:19px;width:100%;top:50%;margin-top:-10px;text-align:center;}
+.loading .text i{padding-left:20px;font-style:normal;background:url(loading.gif) no-repeat;}
+
+
+/*
+ * Copyright 2009 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by an Apache 2.0 License.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Styling for custom buttons rendered by goog.ui.CustomButtonRenderer.
+ *
+ * @author attila@google.com (Attila Bodis)
+ */
+
+.ks-button {
+    display: inline-block;
+    *display: inline;
+    *zoom:1;
+    margin: 2px;
+    font-family: Arial, sans-serif;
+    color: #000;
+    /* Client apps may override the URL at which they serve the image. */
+    background: #ddd url(button-bg.png) repeat-x top left;
+    text-decoration: none;
+    list-style: none;
+    vertical-align: middle;
+    cursor: default;
+    outline: none;
+    border-radius: 2px;
+    border-style: solid;
+    border-color: #aaa;
+    border-width: 1px;
+    /* By default in FF2, block elements inside a moz-inline-box are stacked
+   * horizontally next to each other.  This stops that weird behavior. */
+    -moz-box-orient: vertical;
+    padding: 3px 4px;
+    white-space: nowrap; /* Prevents buttons from line breaking on android. */
+}
+
+/* State: disabled. */
+.ks-button-disabled {
+    background-image: none !important;
+    opacity: 0.3;
+    cursor: default !important;
+    -moz-opacity: 0.3;
+    filter: alpha(opacity = 30);
+    color: #333 !important;
+    border-color: #999 !important;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .ks-button-disabled {
+    margin: 2px 1px !important;
+    padding: 0 1px !important;
+}
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .ks-button-disabled {
+    margin: 2px 1px !important;
+    padding: 0 1px !important;
+}
+
+/* State: hover. */
+.ks-button-hover {
+    border-color: #9cf #69e #69e #7af !important; /* Hover border wins. */
+}
+
+/* State: active, checked. */
+.ks-button-active,
+.ks-button-checked {
+    background-color: #bbb;
+    background-position: bottom left;
+}
+
+/* State: focused. */
+.ks-button-focused {
+    border-color: orange;
+}
+
+.ks-button-collapse-left {
+    margin-left: 0 !important;
+    border-radius: 0 2px 2px 0;
+    border-left: none;
+}
+
+.ks-button-collapse-right {
+    border-right: none !important;
+    border-radius: 2px 0 0 2px;
+    margin-right: 0 !important;
+}
+    .ks-overlay {
+        position:absolute;
+        position: fixed;
+        left:-9999px;
+        top:-9999px;
+        z-index: 100;
+    }
+    .ks-overlay-hidden {
+        visibility: hidden;
+    }
+
+    .ks-overlay-mask-hidden {
+        display: none;
+    }
+
+    .ks-overlay-shown {
+        visibility: visible;
+    }
+
+    .ks-overlay-mask-shown{
+        display: block;
+    }
+</style>
+</head>
+<body>
+<div id="button-wrap"></div>
+<script>
+//最简单好用的！
+var node = '<div class="loading" style="width:600px;height:200px;"> '
+    + '<div class="mask"></div> '
+    + '<i class="icon" style="position: absolute;left:200px;top:100px;">加载中，请稍候…</i> '
+    + '</div>';
+
+KISSY.use('ua,event,node,kg/overlay/0.0.1/,button', function(S, UA, Event, Node, O, B) {
+    var popup = new O({
+        content: node,
+        width: 600,
+        height: 200,
+        align: {
+            points: ['cc', 'cc']
+        },
+        effect: {
+            effect:"fade",
+            duration:0.5
+        }
+    });
+
+    if (UA.ie == 6) {
+        Event.on(window, "scroll", function() {
+            if (popup.get("visible"))
+                popup.center();
+        });
+    }
+    var show = new B({
+        content: "显示",
+
+        render: "#button-wrap"
+    });
+    show.render();
+    show.on("click", function() {
+        popup.show();
+    });
+
+    var hide = new B({
+        content: "隐藏",
+
+        render: "#button-wrap"
+    });
+    hide.render();
+    hide.on("click", function() {
+        popup.hide();
+    });
+});
+</script>
+</body>
+</html>
